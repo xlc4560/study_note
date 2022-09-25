@@ -14,7 +14,7 @@ hero:
       link: /js_md/
     - theme: alt
       text: View on GitHub
-      link: https://github.com/vuejs/vitepress
+      link: https://github.com/xlc4560/study_note
     - theme: alt
       text: Go to VitePress
       link: https://vitepress.vuejs.org/
