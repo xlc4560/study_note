@@ -1,12 +1,3 @@
-/*
- * @Author: xianglc1 298198256@qq.com
- * @Date: 2022-09-22 21:11:14
- * @LastEditors: xianglc1 298198256@qq.com
- * @LastEditTime: 2022-09-25 15:34:24
- * @FilePath: \study_note\docs\.vitepress\config.js
- * @Description: 这是默认设置,请设置`customMade`, 打开koroFileHeader查看配置 进行设置: https://github.com/OBKoro1/koro1FileHeader/wiki/%E9%85%8D%E7%BD%AE
- */
-// docs/.vitepress/config.js
 import { defineConfig } from "vitepress";
 
 export default defineConfig({
@@ -19,7 +10,7 @@ export default defineConfig({
   // 生成html的head配置：站点favicon...
   head: [
     // 添加图标
-    ["link", { rel: "icon", href: "/favicon.png" }],
+    ["link", { rel: "icon", href: "/toux.jpg" }],
   ],
   // 打包目录
   dest: "./dist",
