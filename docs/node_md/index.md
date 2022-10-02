@@ -31,3 +31,23 @@ console.log("程序执行完毕。");
 */
 fs.writeFile(file, data[, options], callback)
 ```
+## node编译文件时，对路径的处理
+```js
+// 当使用文件读取模块读取某个文件时，传入的是相对路径
+const fs = require("fs")
+// 相对路径是相对与使用node编译此文件时所处的目录
+// 终端就是cmd或者powershell，在不同的目录下打开，对应的路径就不同
+// 例如 在E: /node/js/static目录下打开终端使用node编译xxx.js时,
+// E:\node\js\static>  node xxx.js
+// 相对路径./input.txt会找到E:\node\js\static\input.txt文件
+// 但在以下情况编译时，会报找不到文件错误
+// E:\node\js>  node .\static\xxx.js  
+// 因为此时根据相对路径./input.txt，找到的是E:\node\js\input.txt, 所以会报错
+// 所以需要使用绝对路径，或者node中的path模块，或者__dirname,
+fs.readFile('./input.txt', function (err, data) {
+   if (err) {
+       return console.error(err);
+   }
+   console.log("异步读取: " + data.toString());
+});
+```
