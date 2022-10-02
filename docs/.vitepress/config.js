@@ -32,9 +32,10 @@ export default defineConfig({
           { text: "js", link: "/js_md/" },
           { text: "ts", link: "/ts_md/" },
           { text: "vue", link: "/vue_md/vue2" },
-          { text: "react笔记", link: "/react_md/" },
+          { text: "react", link: "/react_md/" },
           { text: "包管理必用插件", link: "/npm_md/" },
-          { text: "其它链接", link: "https://www.baidu.com/" }, // 外部链接
+          { text: "node", link: "/node_md/" },
+          { text: "其它链接", link: "/interview/" }, // 外部链接
         ],
       },
     ],
