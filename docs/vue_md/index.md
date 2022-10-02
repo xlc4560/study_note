@@ -30,7 +30,7 @@
 
 #### 具名插槽
 
-```vue
+```js
 // 注意：如果一个插槽没有指定name属性，则会使用它的默认值：default
 // 子组件
 <template>
@@ -52,7 +52,9 @@
     </template>
   </hello-world>
 </template>
-v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写为 <template #header>
+```
+```
+// v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写为 <template #header>
 // 父组件写法等价于
 <template>
   <hello-world>
@@ -176,8 +178,6 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
   </script>
 ```
 
-
-
 ## 5.使用Proxy实现数据响应式
 
 ```html
@@ -247,11 +247,15 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 //    可以用常规的方法（prop，emit，provide/inject，获取组件实例对象）
 
 // 3. 对于eventbus和消息订阅发布，没有实战过因此不了解具体的机制，不做评价
-```
 2. 组件封装
 
 (1). 对于一个高复用性的组件，一定是将****实现的逻辑与接收的数据以及返回出的数据完整的****封装到组件内部从而实现复用
 
-3. hooks的使用理解（个人理解，仅作参考）
+1. hooks的使用理解（个人理解，仅作参考）
 
 (1). hooks就是将一个组件中复杂的逻辑与数据抽离出来，而抽离出的数据与逻辑也可以实现局部的数据与逻辑共享功能，类似于局部的“Pinia或VueX”
+```
+
+## 8.封装组件高级使用技巧
+查看官网的解释
+点击此处跳转(https://cn.vuejs.org/guide/components/attrs.html#attribute-inheritance)
