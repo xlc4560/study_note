@@ -24,8 +24,8 @@ features:
     title: 新增node笔记，2022/10/02
     details: url:/node_md/
   - icon: 🖖
-    title: Power of Vue meets Markdown
-    details: Lorem ipsum...
+    title: vue进阶，组件封装技巧,2022/10/02
+    details: url:/vue_md/
   - icon: 🛠️
     title: Simple and minimal, always
     details: Lorem ipsum...
