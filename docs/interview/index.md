@@ -1,16 +1,16 @@
 # JavaScript
 
-## 1.垃圾回收机制
+### 1.垃圾回收机制
 
 目的：防止内存泄漏
 
 什么是内存泄漏？ 内存泄漏的含义就是当已经不需要某块内存时这块内存还存在着，垃圾回收机制就是间歇的不定期的寻找到不再使用的变量，并释放掉它们所指向的内存。
 
-#### **变量的生命周期**
+##### **变量的生命周期**
 
 当一个变量的生命周期结束之后它所指向的内存就应该被释放。JS有两种变量，全局变量和在函数中产生的局部变量。局部变量的生命周期在函数执行过后就结束了，此时便可将它引用的内存释放（即垃圾回收），但全局变量生命周期会持续到浏览器关闭页面。
 
-#### 垃圾回收方式
+##### 垃圾回收方式
 
 JS执行环境中的垃圾回收器怎样才能检测哪块内存可以被回收有两种方式：标记清除（mark and sweep）、引用计数(reference counting)。
 
@@ -23,11 +23,11 @@ JS执行环境中的垃圾回收器怎样才能检测哪块内存可以被回收
 
 这种方式常常会引起内存泄漏，低版本的IE使用这种方式。机制就是跟踪一个值的引用次数，当声明一个变量并将一个引用类型赋值给该变量时该值引用次数加1，当这个变量指向其他一个时该值的引用次数便减一。当该值引用次数为0时就会被回收。
 
-## 2.作用域
+### 2.作用域
 
 **作用域指的是有权访问的变量集合。**
 
-### JavaScript 函数作用域
+#### JavaScript 函数作用域
 
 在 JavaScript 中有两种作用域类型：
 
@@ -40,7 +40,7 @@ JavaScript 拥有函数作用域：每个函数创建一个新的作用域。
 
 函数内部定义的变量从函数外部是不可访问的（不可见的）。
 
-## 3.函数闭包
+### 3.函数闭包
 
 **闭包**（closure）是一个函数以及其捆绑的周边环境状态（**lexical environment**，**词法环境**）的引用的组合。换而言之，闭包让开发者可以从内部函数访问外部函数的作用域。在 JavaScript 中，闭包会随着函数的创建而被同时创建。
 
@@ -103,9 +103,9 @@ const area3 = getTenArea(40);
 
 
 
-## 4.数据精度问题
+### 4.数据精度问题
 
-#### 4.1. toFixed方法
+##### 4.1. toFixed方法
 
 四舍六入 五留双 （银行家舍入法）
 
@@ -120,13 +120,13 @@ console.log(3.156.toFixed(2))
 // 3.16
 ```
 
-#### 4.2 银行家算法*
+##### 4.2 银行家算法*
 
-## 5. null的类型
+### 5. null的类型
 
 object ， 存放位置 栈内存
 
-## 6.高阶函数
+### 6.高阶函数
 
 高阶函数是一个可以接收函数作为参数，甚至返回一个函数的函数。 它就像常规函数一样，只是多了接收和返回其他函数的附加能力，即参数和输出。
 
@@ -148,9 +148,9 @@ const strArray = ["JavaScript", "Python", "PHP", "Java", "C"];
 
 
 
-## 7.函数的三种参数
+### 7.函数的三种参数
 
-#### 7.1 解构参数
+###### 7.1 解构参数
 
 ```javascript
 function greeFirstPerson([{ name }]) {
@@ -162,7 +162,7 @@ greeFirstPerson(persons); // => 'Hello, 王小智!'
 // {name = 'Unknown'} ={} 默认为空对象。
 ```
 
-#### 7.2 arguments
+###### 7.2 arguments
 
 ```javascript
 // arguments 
@@ -178,7 +178,7 @@ function sumArgs() {
 sumArgs(5, 6); // => 11
 ```
 
-#### 7.3 剩余参数
+###### 7.3 剩余参数
 
 ```javascript
 // 剩余参数
@@ -199,7 +199,7 @@ arguments对象还有一些附加的属性 （如callee属性）。
 
 
 
-## 8.call apply bind区别
+### 8.call apply bind区别
 
 call方法：
 
@@ -263,7 +263,7 @@ fn(1,2) // this指向window
 
 
 
-## 9. this指向问题
+### 9. this指向问题
 
 箭头函数
 
@@ -275,15 +275,200 @@ fn(1,2) // this指向window
 
 
 
+### 10. 手写Promise
+
+```javascript
+// 首先，我们声明它的三种状态
+const PENDING = 'pending'
+const FULFILLED = 'fulfilled'
+const REJECTED = 'rejected'
+
+// 以构造函数的形式实现
+class MyPromise {
+  constructor(executor) {
+    // 利用 try/catch 捕获错误
+    try {
+      executor(this.resolve, this.reject)
+    } catch (error) {
+      this.reject(error)
+    }
+  }
+  // 定义 Promise 初始状态为 PENDING
+  status = PENDING
+  // resolve 后返回的数据
+  data = undefined
+  // reject 后返回的原因
+  reason = undefined
+  // resolve 的回调函数列表
+  successCallback = []
+  // reject 的回调函数列表
+  failureCallback = []
+  // 成功
+  resolve = data => {
+    // 一旦状态改变，就不能再变
+    if (this.status !== PENDING) return
+    // 更改状态
+    this.status = FULFILLED
+    // 保存数据
+    this.data = data
+    // 依次调用成功回调
+    while (this.successCallback.length) {
+      this.successCallback.shift()(this.data)
+    }
+  }
+  // 失败
+  reject = reason => {
+    // 一旦状态改变，就不能再变
+    if (this.status !== PENDING) return
+    // 更改状态
+    this.status = REJECTED
+    // 保存原因
+    this.reason = reason
+    // 依次调用失败回调
+    while (this.failureCallback.length) {
+      this.failureCallback.shift()(this.reason)
+    }
+  }
+  // then：处理 resolve 和 reject
+  then(onResolved = data => data /*设置默认的成功回调 */, onRejected) {
+    // 创建一个新的 Promise 并 return，以供链式调用
+    let promise = new MyPromise((resolve, reject) => {
+      if (this.status === FULFILLED) {
+        // 转换为 异步执行，用来获取 新的 promise
+        setTimeout(() => {
+          try {
+            let value = onResolved(this.data)
+            // 判断返回值是普通值还是 Promise
+            resolvePromise(promise, value, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
+        }, 0)
+      } else if (this.status === REJECTED) {
+        setTimeout(() => {
+          try {
+            let value = onRejected(this.reason)
+            resolvePromise(promise, value, resolve, reject)
+          } catch (error) {
+            reject(error)
+          }
+        }, 0)
+      } else {
+        // 将回调函数存入数组
+        this.successCallback.push(() => {
+          setTimeout(() => {
+            try {
+              let value = onResolved(this.data)
+              resolvePromise(promise, value, resolve, reject)
+            } catch (error) {
+              reject(error)
+            }
+          }, 0)
+        })
+        // 将回调函数存入数组
+        this.failureCallback.push(() => {
+          setTimeout(() => {
+            try {
+              let value = onRejected(this.reason)
+              resolvePromise(promise, value, resolve, reject)
+            } catch (error) {
+              reject(error)
+            }
+          }, 0)
+        })
+      }
+    })
+    return promise
+  }
+  // .catch()
+  catch(onRejected) {
+    // 事实上 .catch() 只是没有给 fulfilled 状态预留参数位置的 .then()
+    return this.then(undefined, onRejected)
+  }
+  // .finally()
+  finally(callback) {
+    return this.then(
+      data => {
+        return MyPromise.resolve(callback().then(() => data))
+      },
+      err => {
+        return MyPromise.resolve(callback()).then(() => {
+          throw err
+        })
+      }
+    )
+  }
+  // Promise.all()
+  static all(iterable) {
+    // 记录执行次数
+    let times = 0
+    // 保存执行结果
+    let result = []
+    // Promise.all() 会返回一个 Promise
+    return new MyPromise((resolve, reject) => {
+      // 记录结果
+      function addData(key, value) {
+        times++
+        result[key] = value
+        times === iterable.length && resolve(result)
+      }
+      // 依次执行，然后将结果保存到数组中
+      iterable.forEach((element, index) => {
+        // 判断元素是否为 Promise 对象
+        element instanceof MyPromise
+          ? element.then(
+              data => addData(index, data),
+              err => reject(err) // 任何一个 Promise 对象的 reject 被执行都会立即 reject()
+            )
+          : addData(index, element) // 非 promise 的元素将被直接放在返回数组中
+      })
+    })
+  }
+  // Promise.resolve()
+  static resolve(value) {
+    // 返回一个以给定值解析后的 Promise 对象
+    return value instanceof MyPromise
+      ? value
+      : new MyPromise(resolve => resolve(value))
+  }
+  // Promise.reject()
+  static reject(error) {
+    return new MyPromise((resolve, reject) => {
+      reject(error)
+    })
+  }
+}
+
+// 判断 Promise 的返回值类型
+function resolvePromise(promise, value, resolve, reject) {
+  // 循环调用报错
+  if (promise === value) {
+    return reject(
+      new TypeError('Chaining cycle detected for promise #<Promise>')
+    )
+  }
+  // 如果是 Promise 对象
+  if (value instanceof MyPromise) {
+    value.then(resolve, reject)
+  } else {
+    resolve(value)
+  }
+}
+
+module.exports = MyPromise
+```
+
+
+
 # react
 
-## 1. react函数组件与类组件的区别
+### 1. react函数组件与类组件的区别
 
 类组件：具有生命周期， 有‘this’， 
 
 函数组件：
 
-## 2.useEffect
+### 2.useEffect
 
 1. 加上[]相当于componentDidMount生命周期, 不传[]监视所有,[]中存放需要监视的数据
 
@@ -306,11 +491,11 @@ fn(1,2) // this指向window
 
 # VUE
 
-## 1.vue-router4中的路由拦截中的next参数
+### 1.vue-router4中的路由拦截中的next参数
 
-## 2.vue3插槽的使用
+### 2.vue3插槽的使用
 
-#### 默认插槽
+###### 默认插槽
 
 ```
 // 子组件
@@ -332,7 +517,7 @@ fn(1,2) // this指向window
 </div>
 ```
 
-#### 具名插槽
+###### 具名插槽
 
 ```
 // 注意：如果一个插槽没有指定name属性，则会使用它的默认值：default
@@ -364,7 +549,7 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 </hello-world>
 ```
 
-#### 作用域插槽
+###### 作用域插槽
 
 ```
 // 子组件传值
@@ -393,7 +578,7 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 </hello-world>
 ```
 
-## 3.自定义指令
+### 3.自定义指令
 
 ```vue
 // 此处是简写形式，完全写法参照官网
@@ -411,7 +596,7 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 </script>
 ```
 
-## 4.使用defineProperty实现数据响应式
+### 4.使用defineProperty实现数据响应式
 
 ```html
 // defineProperty代理数据只能一次代理对象中的一个属性，无法监视到新增的属性；
@@ -470,7 +655,7 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 
 
 
-## 5.使用Proxy实现数据响应式
+### 5.使用Proxy实现数据响应式
 
 ```html
 // proxy可以代理一整个对象，能够监视到对象元素的新增
@@ -517,7 +702,7 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 
 # html&CSS
 
-## 1.flex如何实现圣杯布局
+### 1.flex如何实现圣杯布局
 
 ```html
 <!DOCTYPE html>
@@ -575,11 +760,11 @@ v-slot 有对应的简写方式 #，因此 <template v-slot:header> 可以简写
 
 
 
-## 2.盒子居中的几种方式
+### 2.盒子居中的几种方式
 
-## 3.回流与重绘
+### 3.回流与重绘
 
-## 4.动画与过渡效果
+### 4.动画与过渡效果
 
 动画
 
@@ -701,11 +886,11 @@ transition
 
 # 面试笔记（用友汽车）
 
-## 1. vue和react的区别
+### 1. vue和react的区别
 
 1.
 
-## 2. 项目介绍
+### 2. 项目介绍
 
 项目背景：将不同外部接口提供的数据按照统一的标准整理成规范的可视化数据，并且此平台可以直接对接口进行测试
 
@@ -713,28 +898,28 @@ transition
 
 难点：表格数据是树形结构时，如何触发单行表单验证
 
-## 3.es6中用到的新特性
+### 3.es6中用到的新特性
 
 1. 数组方法，例如filter， map， reduce， forEach，includes， some， every
 2. async/await
 3. 模板字符串，箭头函数， const， 展开运算符，  对象和数组解构赋值，
 
-## 4.离线缓存
+### 4.离线缓存
 
 localstorage, sessionstorage
 
 在进入表单组件时，发一次token刷新请求
 
-## 5.this的指向
+### 5.this的指向
 
 四种
 
-## 6.http状态码
+### 6.http状态码
 
 400数据错误， 401未登录，403权限不足， 404路径错误
 
-## 7.毕业计划
+### 7.毕业计划
 
-## 8.梳理复杂的逻辑
+### 8.梳理复杂的逻辑
 
-## 9.加班的看法
+### 9.加班的看法

@@ -30,7 +30,7 @@ export default defineConfig({
         text: "分类",
         items: [
           { text: "js", link: "/js_md/" },
-          { text: "ts", link: "/ts_md/" },
+          { text: "ts", link: "/ts_md/typescript-basic" },
           { text: "vue", link: "/vue_md/vue2" },
           { text: "react", link: "/react_md/" },
           { text: "包管理必用插件", link: "/npm_md/" },
@@ -62,6 +62,27 @@ export default defineConfig({
           ],
         },
       ],
+      "/ts_md/":[
+        {
+          text: "typescript",
+          collapsed: true,
+          collapsible: true,
+          items: [
+            {
+              text: "基础",
+              link: "/ts_md/typescript-basic",
+            },
+            {
+              text: "进阶",
+              link: "/ts_md/object-oriented",
+            },
+            {
+              text: "个人心得",
+              link: "/ts_md/",
+            }
+          ],
+        },
+      ]
     },
     socialLinks: [{ icon: "github", link: "https://github.com/xlc4560/study_note" }],
     // 页脚配置

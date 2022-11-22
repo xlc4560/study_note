@@ -216,7 +216,7 @@ let obj = {
     myname:"张三"
 }
 
-fn.call(obj,1,2); // this会变成传入的obj，传入的参数必须是一个数组；
+fn.call(obj,1,2); // this会变成传入的obj，传入的参数必须是一个列表；
 fn(1,2) // this指向window
 ```
 
@@ -239,7 +239,7 @@ var say=obj.say;
 setTimeout(function(){
  say.apply(obj,["1996","China"])
 } ,0); //lucy is 1996 born from China,this改变指向了obj
-say("1996"，"China") //martin is 1996 born from China,this指向window，说明apply只是临时改变一次this指向
+say("1996","China") //martin is 1996 born from China,this指向window，说明apply只是临时改变一次this指向
 ```
 
 bind方法：
@@ -272,3 +272,183 @@ fn(1,2) // this指向window
 普通函数
 
 指向调用者， 回调函数指向window
+
+## 10. 手写Promise
+
+```javascript
+// 首先，我们声明它的三种状态
+      const PENDING = 'pending';
+      const FULFILLED = 'fulfilled';
+      const REJECTED = 'rejected';
+
+      // 以构造函数的形式实现
+      class MyPromise {
+        constructor(executor) {
+          // 利用 try/catch 捕获错误
+          try {
+            executor(this.resolve, this.reject);
+          } catch (error) {
+            this.reject(error);
+          }
+        }
+        // 定义 Promise 初始状态为 PENDING
+        status = PENDING;
+        // resolve 后返回的数据
+        data = undefined;
+        // reject 后返回的原因
+        reason = undefined;
+        // resolve 的回调函数列表
+        successCallback = [];
+        // reject 的回调函数列表
+        failureCallback = [];
+        // 成功
+        resolve = data => {
+          // 一旦状态改变，就不能再变
+          if (this.status !== PENDING) return;
+          // 更改状态
+          this.status = FULFILLED;
+          // 保存数据
+          this.data = data;
+          // 依次调用成功回调
+          while (this.successCallback.length) {
+            this.successCallback.shift()(this.data);
+          }
+        };
+        // 失败
+        reject = reason => {
+          // 一旦状态改变，就不能再变
+          if (this.status !== PENDING) return;
+          // 更改状态
+          this.status = REJECTED;
+          // 保存原因
+          this.reason = reason;
+          // 依次调用失败回调
+          while (this.failureCallback.length) {
+            this.failureCallback.shift()(this.reason);
+          }
+        };
+        // then：处理 resolve 和 reject
+        then(onResolved = data => data /*设置默认的成功回调 */, onRejected) {
+          // 创建一个新的 Promise 并 return，以供链式调用
+          let promise = new MyPromise((resolve, reject) => {
+            if (this.status === FULFILLED) {
+              // 转换为 异步执行，用来获取 新的 promise
+              setTimeout(() => {
+                try {
+                  let value = onResolved(this.data);
+                  // 判断返回值是普通值还是 Promise
+                  resolvePromise(promise, value, resolve, reject);
+                } catch (error) {
+                  reject(error);
+                }
+              }, 0);
+            } else if (this.status === REJECTED) {
+              setTimeout(() => {
+                try {
+                  let value = onRejected(this.reason);
+                  resolvePromise(promise, value, resolve, reject);
+                } catch (error) {
+                  reject(error);
+                }
+              }, 0);
+            } else {
+              // 将回调函数存入数组
+              this.successCallback.push(() => {
+                setTimeout(() => {
+                  try {
+                    let value = onResolved(this.data);
+                    resolvePromise(promise, value, resolve, reject);
+                  } catch (error) {
+                    reject(error);
+                  }
+                }, 0);
+              });
+              // 将回调函数存入数组
+              this.failureCallback.push(() => {
+                setTimeout(() => {
+                  try {
+                    let value = onRejected(this.reason);
+                    resolvePromise(promise, value, resolve, reject);
+                  } catch (error) {
+                    reject(error);
+                  }
+                }, 0);
+              });
+            }
+          });
+          return promise;
+        }
+        // .catch()
+        catch(onRejected) {
+          // 事实上 .catch() 只是没有给 fulfilled 状态预留参数位置的 .then()
+          return this.then(undefined, onRejected);
+        }
+        // .finally()
+        finally(callback) {
+          return this.then(
+            data => {
+              return MyPromise.resolve(callback().then(() => data));
+            },
+            err => {
+              return MyPromise.resolve(callback()).then(() => {
+                throw err;
+              });
+            },
+          );
+        }
+        // Promise.all()
+        static all(iterable) {
+          // 记录执行次数
+          let times = 0;
+          // 保存执行结果
+          let result = [];
+          // Promise.all() 会返回一个 Promise
+          return new MyPromise((resolve, reject) => {
+            // 记录结果
+            function addData(key, value) {
+              times++;
+              result[key] = value;
+              times === iterable.length && resolve(result);
+            }
+            // 依次执行，然后将结果保存到数组中
+            iterable.forEach((element, index) => {
+              // 判断元素是否为 Promise 对象
+              element instanceof MyPromise
+                ? element.then(
+                    data => addData(index, data),
+                    err => reject(err), // 任何一个 Promise 对象的 reject 被执行都会立即 reject()
+                  )
+                : addData(index, element); // 非 promise 的元素将被直接放在返回数组中
+            });
+          });
+        }
+        // Promise.resolve()
+        static resolve(value) {
+          // 返回一个以给定值解析后的 Promise 对象
+          return value instanceof MyPromise ? value : new MyPromise(resolve => resolve(value));
+        }
+        // Promise.reject()
+        static reject(error) {
+          return new MyPromise((resolve, reject) => {
+            reject(error);
+          });
+        }
+      }
+
+      // 判断 Promise 的返回值类型
+      function resolvePromise(promise, value, resolve, reject) {
+        // 循环调用报错
+        if (promise === value) {
+          return reject(new TypeError('Chaining cycle detected for promise #<Promise>'));
+        }
+        // 如果是 Promise 对象
+        if (value instanceof MyPromise) {
+          value.then(resolve, reject);
+        } else {
+          resolve(value);
+        }
+      }
+
+```
+
+

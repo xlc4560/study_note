@@ -5,7 +5,7 @@
 // node (js文件的url),需要提前安装好node环境
 node xxx.js
 ```
-## node文件读取/写入
+## node文件读取/写入(fs模块)
 ```js{0,1}
 // 仅列出最基本的文件读取写入操作，有更复杂的需求请参照官网
 const fs = require("fs")
@@ -50,4 +50,54 @@ fs.readFile('./input.txt', function (err, data) {
    }
    console.log("异步读取: " + data.toString());
 });
+```
+
+
+
+## path模块的使用
+```js
+const path = require('path')
+const fs = require('fs')
+
+// 注意：  ../ 会抵消前面的路径
+// const pathStr = path.join('/a', '/b/c', '../../', './d', 'e')
+// console.log(pathStr)  // \a\b\d\e
+
+// fs.readFile(__dirname + '/files/1.txt')
+
+// path.join用于连接路径。该方法的主要用途在于，会正确使用当前系统的路径分隔符，Unix系统是"/"，Windows系统是"\"。
+fs.readFile(path.join(__dirname, './files/1.txt'), 'utf8', function(err, dataStr) {
+  if (err) {
+    return console.log(err.message)
+  }
+  console.log(dataStr)
+})
+
+// 定义文件的存放路径
+const fpath = "/a/b/c/index.html";
+
+// const fullName = path.basename(fpath)
+// console.log(fullName)
+
+// path.basename返回路径中的最后一部分
+const nameWithoutExt = path.basename(fpath, ".html");
+console.log(nameWithoutExt);
+
+// path.extname(p)返回路径中文件的后缀名
+const fext = path.extname(fpath)
+console.log(fext)
+path.resolve([from ...], to)
+
+/* 将 to 参数解析为绝对路径，给定的路径的序列是从右往左被处理的，后面每个 path 被依次解析，直到构造完成一个绝对路径。 例如，给定的路径片段的序列为：/foo、/bar、baz，则调用 path.resolve('/foo', '/bar', 'baz') 会返回 /bar/baz。 */
+
+path.resolve('/foo/bar', './baz');
+// 返回: '/foo/bar/baz'
+
+path.resolve('/foo/bar', '/tmp/file/');
+// 返回: '/tmp/file'
+
+path.resolve('wwwroot', 'static_files/png/', '../gif/image.gif');
+// 如果当前工作目录为 /home/myself/node，
+// 则返回 '/home/myself/node/wwwroot/static_files/gif/image.gif'
+
 ```

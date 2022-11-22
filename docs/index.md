@@ -20,15 +20,22 @@ hero:
       text: Go to VitePress
       link: https://process1024.github.io/vitepress/
 features:
+  - icon: 🛠️
+    title: 新增node.js path模块笔记 2022/10/29
+    details: url:/js_md/
+  - icon: 🛠️
+    title: 新增手写Promise案例 2022/10/23
+    details: url:/js_md/
+  - icon: 🍋
+    title: 新增ts笔记，2022/10/23
+    details: url:/ts_md/
   - icon: ⚡️
     title: 新增node笔记，2022/10/02
     details: url:/node_md/
   - icon: 🖖
     title: vue进阶，组件封装技巧,2022/10/02
     details: url:/vue_md/
-  - icon: 🛠️
-    title: Simple and minimal, always
-    details: Lorem ipsum...
+
 ---
 
 <style>
