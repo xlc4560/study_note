@@ -1,7 +1,6 @@
 ---
 layout: home
 
-
 hero:
   name: MY BLOG
   text: 学习笔记
