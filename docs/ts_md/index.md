@@ -8,6 +8,20 @@
 -->
 # TypeScript
 
+## 关于typeof与interface的理解
+
+```typescript
+
+/**
+ * 用interface描述**数据结构**，用type描述**类型关系**
+ * 使用interface时主要用于描述数据的结果， 
+ * 如果需要对不同的类型进行处理，也就是描述不同的类型他们之间的关系，
+ * 此时，使用type ，相应的由于这种设定， 像一些类型操作符（in, keyof）
+ * 只能在type声明下使用
+ */
+
+```
+
 ## 关于keyof的个人理解
 
    ```typescript
